@@ -14,6 +14,7 @@ A cross-platform Pomodoro timer (Android, iOS, Web, Desktop) built with Flutter 
 - Settings (durations, rounds, auto-start) saved locally with `shared_preferences`
 - Statistics: today, day streak and a 7-day bar chart
 - Sound, haptic feedback and a message when a phase ends
+- Keyboard shortcuts on web and desktop: **Space** start/pause, **R** reset, **S** skip
 
 ## Architecture
 ```
