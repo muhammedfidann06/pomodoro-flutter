@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pomodoro/main.dart';
 import 'package:pomodoro/pomodoro.dart';
@@ -133,5 +134,23 @@ void main() {
     await tester.tap(find.byKey(const Key('startButton')));
     await tester.pump();
     expect(find.text('Start'), findsOneWidget);
+  });
+
+  testWidgets('Tastenkürzel: Leertaste startet, S überspringt', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    tester.view.physicalSize = const Size(800, 1600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(PomodoroApp(storage: Storage()));
+    await tester.pump();
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.space);
+    await tester.pump();
+    expect(find.text('Pause'), findsOneWidget);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.keyS);
+    await tester.pump();
+    expect(find.text('05:00'), findsOneWidget); // kurze Pause
   });
 }
