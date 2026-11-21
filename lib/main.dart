@@ -111,6 +111,22 @@ class _TimerPageState extends State<TimerPage> {
     final color = phaseColor(c.phase);
     final today = _history[dayKey(DateTime.now())] ?? 0;
 
+    // Tastenkürzel (praktisch im Browser und am Desktop):
+    // Leertaste = Start/Pause, R = Zurücksetzen, S = Überspringen
+    return CallbackShortcuts(
+      bindings: {
+        const SingleActivator(LogicalKeyboardKey.space): c.toggle,
+        const SingleActivator(LogicalKeyboardKey.keyR): c.reset,
+        const SingleActivator(LogicalKeyboardKey.keyS): c.skip,
+      },
+      child: Focus(
+        autofocus: true,
+        child: _buildScaffold(c, color, today),
+      ),
+    );
+  }
+
+  Widget _buildScaffold(PomodoroController c, Color color, int today) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Pomodoro'),
@@ -152,7 +168,13 @@ class _TimerPageState extends State<TimerPage> {
                   IconButton.outlined(tooltip: 'Überspringen', icon: const Icon(Icons.skip_next), onPressed: c.skip),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 8),
+              Text(
+                'Tastatur: Leertaste = Start/Pause · R = Zurücksetzen · S = Überspringen',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 16),
               TextField(
                 controller: _task,
                 decoration: const InputDecoration(
