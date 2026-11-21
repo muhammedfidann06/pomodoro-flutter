@@ -115,6 +115,11 @@ void main() {
 
   testWidgets('App startet, Start/Pause funktioniert', (tester) async {
     SharedPreferences.setMockInitialValues({});
+    // Großer Bildschirm wie ein Handy im Hochformat, damit alle Knöpfe sichtbar sind.
+    tester.view.physicalSize = const Size(800, 1600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
     await tester.pumpWidget(PomodoroApp(storage: Storage()));
     await tester.pump();
 
