@@ -38,3 +38,8 @@ flutter test
 ## Kurzbeschreibung (Deutsch)
 Ein Pomodoro-Timer mit Flutter: 25 Minuten arbeiten, dann eine kurze Pause, nach vier Runden eine lange Pause.
 Die Einstellungen und die Statistik werden lokal gespeichert. Die Logik ist von der UI getrennt und hat Unit-Tests.
+
+## How this was built
+This project was created with the help of an AI coding assistant (Claude). I'm learning to program and use it to understand
+how the code works – the tests and the CI pipeline show that it runs correctly.
+*Dieses Projekt ist mit Hilfe eines KI-Assistenten entstanden; ich nutze es, um Programmieren zu lernen.*
