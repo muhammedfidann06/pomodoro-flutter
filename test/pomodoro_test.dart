@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pomodoro/main.dart';
 import 'package:pomodoro/pomodoro.dart';
 import 'package:pomodoro/storage.dart';
+import 'package:pomodoro/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // Eine "falsche" Uhr: Wir bestimmen selbst, wie spät es ist.
@@ -89,10 +90,31 @@ void main() {
   });
 
   test('Settings JSON hin und zurück', () {
-    const s = PomodoroSettings(workMinutes: 40, autoStart: true);
+    const s = PomodoroSettings(workMinutes: 40, autoStart: true, dailyGoal: 5);
     final back = PomodoroSettings.fromJson(s.toJson());
     expect(back.workMinutes, 40);
     expect(back.autoStart, isTrue);
+    expect(back.dailyGoal, 5);
+  });
+
+  test('Tagesziel: Fortschritt und alte Einstellungen', () {
+    const s = PomodoroSettings(dailyGoal: 4);
+    expect(s.goalProgress(1), 0.25);
+    expect(s.goalProgress(9), 1.0); // mehr als das Ziel -> voll
+    // Gespeicherte Einstellungen aus einer alten Version haben noch kein Ziel
+    expect(PomodoroSettings.fromJson({'work': 25}).dailyGoal, 8);
+  });
+
+  testWidgets('StatsCard zeigt das Tagesziel', (tester) async {
+    Future<void> show(int today) => tester.pumpWidget(MaterialApp(
+          home: Scaffold(
+            body: StatsCard(today: today, streak: 1, week: const [], color: Colors.red, dailyGoal: 3),
+          ),
+        ));
+    await show(2);
+    expect(find.text('2 / 3'), findsOneWidget);
+    await show(3);
+    expect(find.text('Geschafft! 3 / 3'), findsOneWidget);
   });
 
   group('Statistik', () {

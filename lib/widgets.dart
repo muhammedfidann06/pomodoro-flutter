@@ -76,7 +76,15 @@ class StatsCard extends StatelessWidget {
   final int streak;
   final List<(DateTime, int)> week;
   final Color color;
-  const StatsCard({super.key, required this.today, required this.streak, required this.week, required this.color});
+  final int dailyGoal;
+  const StatsCard({
+    super.key,
+    required this.today,
+    required this.streak,
+    required this.week,
+    required this.color,
+    this.dailyGoal = 8,
+  });
 
   static const _days = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
 
@@ -94,6 +102,29 @@ class StatsCard extends StatelessWidget {
                 Expanded(child: _Stat(icon: Icons.check_circle, label: 'Heute', value: '$today')),
                 Expanded(child: _Stat(icon: Icons.local_fire_department, label: 'Serie', value: '$streak Tage')),
               ],
+            ),
+            const SizedBox(height: 16),
+            // Tagesziel als Fortschrittsbalken
+            Row(
+              children: [
+                Text('Tagesziel', style: Theme.of(context).textTheme.labelMedium),
+                const Spacer(),
+                Text(
+                  today >= dailyGoal ? 'Geschafft! $today / $dailyGoal' : '$today / $dailyGoal',
+                  key: const Key('goalText'),
+                  style: Theme.of(context).textTheme.labelMedium,
+                ),
+              ],
+            ),
+            const SizedBox(height: 6),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: dailyGoal <= 0 ? 1 : (today / dailyGoal).clamp(0.0, 1.0),
+                minHeight: 8,
+                color: color,
+                backgroundColor: color.withValues(alpha: 0.15),
+              ),
             ),
             const SizedBox(height: 16),
             SizedBox(
@@ -190,6 +221,8 @@ class _SettingsSheetState extends State<SettingsSheet> {
                   (v) => setState(() => _s = _s.copyWith(shortBreakMinutes: v))),
               _slider('Lange Pause (Minuten)', _s.longBreakMinutes, 5, 45,
                   (v) => setState(() => _s = _s.copyWith(longBreakMinutes: v))),
+              _slider('Tagesziel (Pomodoros)', _s.dailyGoal, 1, 16,
+                  (v) => setState(() => _s = _s.copyWith(dailyGoal: v))),
               _slider('Runden bis zur langen Pause', _s.roundsUntilLongBreak, 2, 8,
                   (v) => setState(() => _s = _s.copyWith(roundsUntilLongBreak: v))),
               SwitchListTile(

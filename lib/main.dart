@@ -189,6 +189,7 @@ class _TimerPageState extends State<TimerPage> {
                 streak: streak(_history, DateTime.now()),
                 week: lastSevenDays(_history, DateTime.now()),
                 color: color,
+                dailyGoal: c.settings.dailyGoal,
               ),
             ],
           ),

@@ -19,6 +19,7 @@ class PomodoroSettings {
   final int longBreakMinutes;
   final int roundsUntilLongBreak; // nach so vielen Arbeitsphasen kommt die lange Pause
   final bool autoStart; // nächste Phase automatisch starten?
+  final int dailyGoal; // Ziel: so viele Pomodoros pro Tag
 
   const PomodoroSettings({
     this.workMinutes = 25,
@@ -26,6 +27,7 @@ class PomodoroSettings {
     this.longBreakMinutes = 15,
     this.roundsUntilLongBreak = 4,
     this.autoStart = false,
+    this.dailyGoal = 8,
   });
 
   PomodoroSettings copyWith({
@@ -34,6 +36,7 @@ class PomodoroSettings {
     int? longBreakMinutes,
     int? roundsUntilLongBreak,
     bool? autoStart,
+    int? dailyGoal,
   }) =>
       PomodoroSettings(
         workMinutes: workMinutes ?? this.workMinutes,
@@ -41,6 +44,7 @@ class PomodoroSettings {
         longBreakMinutes: longBreakMinutes ?? this.longBreakMinutes,
         roundsUntilLongBreak: roundsUntilLongBreak ?? this.roundsUntilLongBreak,
         autoStart: autoStart ?? this.autoStart,
+        dailyGoal: dailyGoal ?? this.dailyGoal,
       );
 
   Duration durationOf(Phase p) => Duration(
@@ -57,6 +61,7 @@ class PomodoroSettings {
         'long': longBreakMinutes,
         'rounds': roundsUntilLongBreak,
         'auto': autoStart,
+        'goal': dailyGoal,
       };
 
   factory PomodoroSettings.fromJson(Map<String, dynamic> j) => PomodoroSettings(
@@ -65,7 +70,11 @@ class PomodoroSettings {
         longBreakMinutes: j['long'] as int? ?? 15,
         roundsUntilLongBreak: j['rounds'] as int? ?? 4,
         autoStart: j['auto'] as bool? ?? false,
+        dailyGoal: j['goal'] as int? ?? 8, // alte Einstellungen ohne Ziel -> Standardwert
       );
+
+  /// Fortschritt zum Tagesziel von 0.0 bis 1.0 (mehr als das Ziel zählt als 1.0).
+  double goalProgress(int doneToday) => dailyGoal <= 0 ? 1 : (doneToday / dailyGoal).clamp(0.0, 1.0);
 }
 
 /// Die Logik des Timers – ohne UI, damit man sie leicht testen kann.
